@@ -12,19 +12,19 @@ class Signin extends React.Component {
         this.state = {
             email: '',
             password: ''
-        }
+        };
     }
 
     handelSubmit = event => {
         event.preventDefault();
 
         this.setState({ email: '', password: '' })
-    }
+    };
 
     handelChange = event => {
         const { value, name } = event.target;
-        this.setState({ [name]: value })
-    }
+        this.setState({ [name]: value });
+    };
 
     render() {
         return (
@@ -42,7 +42,7 @@ class Signin extends React.Component {
                 </form>
 
             </div>
-        )
+        );
     }
 
 }
