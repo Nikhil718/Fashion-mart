@@ -10,15 +10,42 @@ const Config = {
     messagingSenderId: "510063753646",
     appId: "1:510063753646:web:4b6c50e539a44f555af03f",
     measurementId: "G-76W7DYYB6Q"
-  }
+}
 
-  firebase.initializeApp(Config);
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+    if (!userAuth) return;
 
-  export const auth = firebase.auth();
-  export const firestore = firebase.firestore();
+    const userRef = firestore.doc(`users/${userAuth.uid}`);
 
-  const Provider = new firebase.auth.GoogleAuthProvider();
-  Provider.setCustomParameters({ prompt : 'select_account'});
-  export const signInWithGoogle = () => auth.signInWithPopup(Provider);
+    const snapShot = await userRef.get();
 
-  export default firebase;
+    if (!snapShot.exists) {
+        const { displayName, email } = userAuth;
+        const createdAt = new Date();
+        
+        try{
+            await userRef.set({
+                displayName,
+                email,
+                createdAt,
+                ...additionalData
+            })
+        } catch(error){
+            console.log('error creating user', error.message);
+        }
+    }
+    return userRef;
+};
+
+
+
+firebase.initializeApp(Config);
+
+export const auth = firebase.auth();
+export const firestore = firebase.firestore();
+
+const Provider = new firebase.auth.GoogleAuthProvider();
+Provider.setCustomParameters({ prompt: 'select_account' });
+export const signInWithGoogle = () => auth.signInWithPopup(Provider);
+
+export default firebase;
